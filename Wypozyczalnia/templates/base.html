@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Wypożyczalnia{% endblock %}</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="brand"><a class="" href="/"><img src="{% static 'logo.png' %}" alt="Logo" width="70" height="50"></a></div>
+
+  <a class="toogle-menu" id="toogle-menu"><img  src="{% static 'menu.png' %}" alt="Menu" width="70" height="50"></a>
+
+  <div class="navbar-links">
+    <ul>
+      <li>
+        {% if request.user.is_authenticated %}
+        <a class="navbar-link cant-close" href="{% url 'profile-url' %}">Profil</a>
+        {% else %}
+        <a class="navbar-link cant-close" href="{% url 'login-url' %}">Zaloguj</a>
+        {% endif %}
+      </li>
+      {% if request.user.username == 'ksiegowy' %}
+      <li><a class="nav-link nav-button" href="{% url 'orders' %}">Transakcje</a></li>
+      {% else %}
+      {% if request.user.username == 'manager' %}
+
+      {% else %}
+      {% if request.user.is_authenticated %}
+      <li><a class="nav-link nav-button" href="{% url 'cart' %}">Koszyk</a></li>
+      {% else %}
+      {% endif %}
+      {% endif %}
+      {% endif %}
+      {% if request.user.username == 'ksiegowy' %}
+
+      {% else %}
+      {% if request.user.username == 'manager' %}
+
+      {% else %}
+      {% if request.user.is_authenticated %}
+      <li>
+        <a id="navbar-dropdown" class="navbar-link cant-close">Kategorie &blacktriangledown;</a>
+        <ul class="navbar-submenu">
+          <li class="no-style-list dropdown-item cant-close">
+              <a class="dropdown-link" id="components">Przygodowe</a>
+            <ul class="no-style-list dropdown-subitem dropdown-components">
+              <li><a href="/search-result?search-form=Łatwa">Łatwa</a></li>
+              <li><a href="/search-result?search-form=Umiarkowana">Umiarkowana</a></li>
+              <li><a href="/search-result?search-form=Trudna">Trudna</a></li>
+            </ul>
+          </li>
+          <li class="no-style-list dropdown-item cant-close">
+            <a class="dropdown-link" id="accessories">Strategiczne</a>
+            <ul class="no-style-list dropdown-subitem dropdown-accessories">
+              <li><a href="/search-result?search-form=Łatwa">Łatwe</a></li>
+              <li><a href="/search-result?search-form=Umiarkowana">Umiarkowana</a></li>
+              <li><a href="/search-result?search-form=Trudna">Trudna</a></li>
+            </ul>
+          </li>
+          <li class="no-style-list dropdown-item cant-close">
+            <a class="dropdown-link" id="peripherials">Dla dzieci</a>
+            <ul class="no-style-list dropdown-subitem dropdown-peripherials">
+              <li><a href="/search-result?search-form=3+">3+</a></li>
+              <li><a href="/search-result?search-form=6+">6+</a></li>
+              <li><a href="/search-result?search-form=12+">12+</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      {% else %}
+      
+{% endif %}
+{% endif %}
+{% endif %}
+      {% if request.user.is_authenticated %}
+      <li><a class="nav-link nav-button navbar-link cant-close" href="{% url 'logout-url' %}">Wyloguj</a></li>
+      {% endif %}
+      {% if request.user.is_authenticated %}
+      {% if request.user.username == 'ksiegowy' %}
+
+      {% else %}
+      {% if request.user.username == 'manager' %}
+
+      {% else %}
+      <li>
+        <form method="GET" action="{% url 'search-result' %}">
+          <input type="search" placeholder="Search" name="search-form">
+          <button id="search-form-button" type="submit">Search</button>
+        </form>
+      </li>
+      {% endif %}
+      {% endif %}
+{% else %}
+{% endif %}
+      {% if request.user.is_staff%}
+      <li><a class="navbar-link cant-close" href="/admin">Panel administracyjny</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+{% if messages %}
+{% for message in messages %}
+<ul class="message">{{ message }}</ul>
+
+{% endfor %}
+{% endif %}
+    {% block content %}
+    {% if request.user.username == 'ksiegowy' %}
+    Witamy w systemia zarządzania wypożyczalnią gier planszowych<br>
+    Jesteś zalogowany jako księgowy<br>
+    Aby zarządzać transakcjami oraz wystawiać faktury VAT wejdź do zakładki trasnakcje
+    {% else %}
+
+    {% if request.user.username == 'sprzedawca' %}
+    Witamy w systemia zarządzania wypożyczalnią gier planszowych<br>
+    Jesteś zalogowany jako sprzedawca<br>
+    Aby zarejestrować wypożyczenie/zakup gry wyszukaj daną grę i przeprowadź transakcję kupna<br>
+    Aby dodać odkupioną grę przejdź do panelu administracyjnego<br>
+    Aby dodać nowego klienta przejdź do panelu administracyjnego<br>
+    Możesz również zarządzać transakcjami przechodząc do swojego profilu
+    {% else %}
+
+    {% if request.user.username == 'manager' %}
+    Witamy w systemia zarządzania wypożyczalnią gier planszowych<br>
+    Jesteś zalogowany jako manager<br>
+    Aby zarządzać bazą gier przejdź do panelu administracyjnego
+    {% else %}
+<h3>Witamy w systemie zarządzania wypożyczalnią gier planszowych. Zaloguj się aby kontunuować.</h3>
+  {% endif %}
+  {% endif %}
+  {% endif %}
+    {% endblock %}
+
+    {% block footer %}
+    <!-- footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        Szymon Stróżyński 148909 | Jakub Majchrzak 149812 | Bartłomiej Ćwiertnia 84783
+
+
+      </div>
+    </footer>
+    {% endblock %}
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'script.js' %}"></script> 
+</body>
+</html>

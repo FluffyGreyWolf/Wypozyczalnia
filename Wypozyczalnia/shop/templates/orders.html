@@ -1,0 +1,23 @@
+{% extends 'base.html' %} 
+{% block title %} Zamówienia {% endblock %}
+{% block content %}
+
+<div class="orders-div">
+    <h3>Historia zamówień</h3>
+    {% for order in orders reversed %}
+        <div class="single-order"><a class="nav-link nav-button" href="{% url 'order-detail' order.pk %}"><p>Numer zamówienia: {{ order }}</p></a>Zamówiono dnia: {{ order.date_ordered }}
+            <p>Ilośc przedmiotów w zamówieniu:
+                {% for item in order.cart_list %}
+                <p>{% if item.amount > 1 %}
+                    {{ item.amount }}x
+                    {% endif %} {{ item }}</p>
+                {% endfor %}
+            </p>
+        </div>
+    {% endfor %}
+
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %} 
+{% block title %} Koszyk {% endblock %}
+{% block content %}
+
+
+
+<ul class="no-style-list cart-list">
+    {% if order.cart_list %}
+    <h2>Zamówienie</h2>
+    <div class="cart-items">
+    {% for item in order.cart_list %}
+    <li class="cart-item">
+        {% if item.amount > 1 %}
+        {{ item.amount }}x
+        {% endif %}
+        {{ item }} <a class="link-button remove-button" href="{% url 'remove-from-cart' item.pk %}">Usuń</a></li> 
+    {% endfor %}
+    </div>
+    <a class="link-button" href="{% url 'checkout' %}">Przejdź do kasy</a>
+    {% else %}
+    <h3>Twój koszyk jest pusty</h3>
+    {% endif %}
+</ul>
+
+
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Wyszukano: {{ searched }}{% endblock %}
+{% load static %}
+{% block content %}
+<div class="page-container">
+    <!-- menu with filter options -->
+<div class="filters">
+    <p>Filtry</p>
+    <div class="price-filter">
+        <form method="GET" action="{% url 'search-result-price-filter' %}">
+        <p class="filters-title">Cena</p>
+        <input class="price-input" type="search" placeholder="Min" name="price-min">
+        <input class="price-input" type="search" placeholder="Max" name="price-max">
+        <input class="price-input" type="hidden" value="{{ searched }}" name="products">
+
+        <p class="filters-title" style="margin-top: 30px;">Sortuj</p>
+        <select name="price-order">
+            {% if order == 'high' %}
+            <option value="high">Najwyższa cena</option>
+            <option value="low">Najniższa cena</option>
+            {% elif order == 'low' %}
+            <option value="low">Najniższa cena</option>
+            <option value="high">Najwyższa cena</option>
+            {% else %}
+            <option value="high">---</option>
+            <option value="high">Najwyższa cena</option>
+            <option value="low">Najniższa cena</option>
+          {% endif %}
+        </select>
+    </div>
+    <button id="price-form-button" type="submit">Szukaj</button>
+</form>
+</div>
+<div class="product-list">
+    <p class="result-title">Pokazujemy wyniki dla {{ searched }}:</p>
+
+<!-- display of item list -->
+{% if page %}
+{% for product in page.object_list %}
+<ul class="product">
+    
+    <li class="product-sublist">
+        <img class="product-picture" src="{{ STATIC_URL }}{{ product.picture }}">
+        <p class="product-name"><a class="nav-link nav-button" href="{% url 'product-detail' product.pk %}">{{ product.name }}</a></p>
+        <p class="product-price">{{ product.price }}zł
+            <a class="add-to-cart link-button" href="{% url 'add-to-cart-buy' product.pk %}" type="submit">Kup</a>
+        </p>   
+        <p class="product-price">{{ product.cena_wypozyczenia }}zł
+            <a class="add-to-cart link-button" href="{% url 'add-to-cart-buy' product.pk %}" type="submit">Wypożycz</a>
+        </p>  
+        <p class="product-price">0zł
+            <a class="add-to-cart link-button" href="{% url 'add-to-cart-buy' product.pk %}" type="submit">Zarezerwuj</a>
+        </p> 
+    </li>
+</ul>
+{% endfor %}
+{% else %}
+<p class="result-title" style="text-align: center;">Niestety nie posiadamy wyszukanego przedmiotu</p>
+<p><img src="{% static 'error.png' %}" width="100px" height="100px"></p>
+{% endif %}
+
+<!-- pagination buttons -->
+    <div class="next-pages">
+        {% if page.object_list.count == 0 %}
+        <!-- there are no items -->
+        {% elif page.number == 1 and page.has_next %}
+        <!-- first page -->
+        <a class="nav-link pagination-button page-active" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">1</a>
+        -
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.next_page_number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.next_page_number }}</a>
+        ...
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.paginator.num_pages  }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.paginator.num_pages }}</a>
+        {% elif page.number == page.paginator.num_pages and page.number != 1 %}
+        <!-- last page -->
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ 1 }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">1</a>
+        ...
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.previous_page_number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.previous_page_number }}</a>
+        -
+        <a class="nav-link pagination-button page-active" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.number }}</a>
+        {% elif page.number == 1 %}
+        <!-- only one page of items -->
+        {% else %}
+        <!-- every other page -->
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ 1 }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">1</a>
+        ...
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.previous_page_number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.previous_page_number }}</a>
+        -
+        <a class="nav-link pagination-button page-active" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.number }}</a>
+        -
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.next_page_number }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.next_page_number }}</a>
+        ...
+        <a class="nav-link pagination-button" href="{% url 'search-result-price-filter' %}?search-form={{ searched }}&page={{ page.paginator.num_pages  }}&price-order={{ order }}&price-min={{ min }}&price-max={{ max }}&products={{ searched }}">{{ page.paginator.num_pages }}</a>
+        {% endif %}
+
+
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

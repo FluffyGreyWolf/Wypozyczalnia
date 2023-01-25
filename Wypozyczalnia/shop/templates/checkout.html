@@ -1,0 +1,33 @@
+{% extends 'base.html' %} 
+{% block title %} Kasa {% endblock %}
+{% block content %}
+
+
+<ul class="no-style-list cart-list">
+    <h2 style="margin-left: 20px;">Twoje zamówienie</h2>
+{% for item in items %}
+
+<li class="cart-item">
+    {% if item.amount > 1 %}
+        {{ item.amount }}x
+        {% endif %}
+        {{ item }} <span class="remove-button">Cena: {% widthratio item.amount 1 item.product.price %}zł</span></li>
+{% endfor %}
+<li class="cart-item">Razem:<span class="remove-button">{{ price }}zł</span></li>
+
+<a class="link-button" href="{% url 'buy' %}">Kup!</a>
+</ul>
+
+<div class="col-md-6">
+    <div class="form-group">
+      <label for="inputStatus">Kto kupuje?</label>
+      <select id="question-subject" class="form-control-sm custom-select">
+        <option selected disabled>Wybierz klienta</option>
+        {% for user in users %}
+        <option value="{{ user }}">{{ user }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+{% endblock %}

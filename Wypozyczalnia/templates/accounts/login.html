@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Logowanie{% endblock %}
+{% block content %}
+
+<form class="register-form" method="POST">
+    {% csrf_token %}
+    <div>
+        <label>Nazwa użytkownika</label>
+        <div class="data-input">
+            <input type="text" name="username">
+        </div>
+    </div>
+    <div>
+        <label>Hasło</label>
+        <div class="data-input">
+            <input type="password" name="password">
+        </div>
+    </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div>
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div>
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %} 
+    <button type="submit" class="link-button">Zaloguj</button>
+    </form>
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
